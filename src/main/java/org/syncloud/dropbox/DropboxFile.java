@@ -1,13 +1,25 @@
 package org.syncloud.dropbox;
 
+import com.dropbox.client2.DropboxAPI;
+import syncloud.core.log.Logger;
 import syncloud.storage.IFile;
 import syncloud.storage.InputStreamProvider;
 import syncloud.storage.NodeKey;
 import syncloud.storage.StorageException;
 
 import java.io.InputStream;
+import java.util.List;
 
 public class DropboxFile implements IFile {
+    private NodeKey key;
+    private DropboxAPI<?> dropbox;
+    private static Logger logger = Logger.getLogger(DropboxFile.class);
+
+    public DropboxFile(NodeKey key, DropboxAPI<?> dropbox) {
+        this.key = key;
+        this.dropbox = dropbox;
+    }
+
     @Override
     public boolean exists() {
         return false;  //To change body of implemented methods use File | Settings | File Templates.
@@ -30,7 +42,8 @@ public class DropboxFile implements IFile {
 
     @Override
     public String getName() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        List<String> components = key.getPathKey().getPathComponents();
+        return components.get(components.size() - 1);
     }
 
     @Override
@@ -40,7 +53,7 @@ public class DropboxFile implements IFile {
 
     @Override
     public NodeKey getKey() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return key;
     }
 
     @Override

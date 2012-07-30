@@ -1,14 +1,17 @@
 package org.syncloud.dropbox;
 
 import com.dropbox.client2.DropboxAPI;
+import com.dropbox.client2.exception.DropboxException;
+import syncloud.core.log.Logger;
 import syncloud.storage.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class DropboxFolder extends IFolder {
-
     private NodeKey key;
     private DropboxAPI<?> dropbox;
+    private static Logger logger = Logger.getLogger(DropboxFolder.class);
 
     public DropboxFolder(NodeKey key, DropboxAPI<?> dropbox) {
         this.key = key;
@@ -17,17 +20,53 @@ public class DropboxFolder extends IFolder {
 
     @Override
     public List<IFolder> getFolders() throws StorageException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        List<IFolder> folders = new ArrayList<IFolder>();
+        try {
+            DropboxAPI.Entry entry = dropbox.metadata(key.getNativePath(), 0, null, true, null);
+            for(DropboxAPI.Entry childEntry: entry.contents) {
+                String childFileName = childEntry.fileName();
+                if (childEntry.isDir)
+                    folders.add(new DropboxFolder(key.child(childFileName), dropbox));
+            }
+        } catch (DropboxException e) {
+            String message = String.format(IFolder.UNABLE_TO_GET_CONTENTS, getName());
+            logger.error(message);
+            throw new StorageException(ErrorCode.Unknown, message);
+        }
+        return folders;
     }
 
     @Override
     public List<INode> getContents() throws StorageException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        try {
+            List<INode> nodes = new ArrayList<INode>();
+            DropboxAPI.Entry entry = dropbox.metadata(key.getNativePath(), 0, null, true, null);
+            for(DropboxAPI.Entry childEntry: entry.contents) {
+                String childFileName = childEntry.fileName();
+                if (childEntry.isDir)
+                    nodes.add(new DropboxFolder(key.child(childFileName), dropbox));
+                else
+                    nodes.add(new DropboxFile(key.child(childFileName), dropbox));
+            }
+            return nodes;
+        } catch (DropboxException e) {
+            String message = String.format(IFolder.UNABLE_TO_GET_CONTENTS, getName());
+            logger.error(message);
+            throw new StorageException(ErrorCode.Unknown, message);
+        }
     }
 
     @Override
-    public IFolder createFolder(String s) throws StorageException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    public IFolder createFolder(String name) throws StorageException {
+        try {
+            NodeKey newKey = key.child(name);
+            DropboxAPI.Entry entry = dropbox.createFolder(newKey.getNativePath());
+            return new DropboxFolder(newKey, dropbox);
+        } catch (DropboxException e) {
+            String message = String.format(UNABLE_TO_ADD_FOLDER(name, getName()));
+            logger.error(message, e);
+            throw new StorageException(message, e);
+        }
     }
 
     @Override
