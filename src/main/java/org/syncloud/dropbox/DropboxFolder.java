@@ -82,11 +82,28 @@ public class DropboxFolder extends IFolder {
 
     @Override
     public void delete() throws StorageException {
-        //To change body of implemented methods use File | Settings | File Templates.
+        String path = key.getNativePath();
+        try {
+            dropbox.delete(path);
+        } catch (DropboxException e) {
+            String message = String.format(UNABLE_TO_DELETE_FOLDER(path));
+            logger.error(message, e);
+            throw new StorageException(message);
+        }
     }
 
     @Override
     public NodeKey getKey() {
         return key;
+    }
+
+    public boolean equals(Object obj) {
+        if (obj == null)
+            return false;
+        if (!(obj instanceof DropboxFolder))
+            return false;
+
+        DropboxFolder other = (DropboxFolder) obj;
+        return key.equals(other.key) && dropbox.equals(dropbox);
     }
 }
