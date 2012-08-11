@@ -28,9 +28,9 @@ public class DropboxStorage implements IStorage, ISecured {
         String accessKey = secretParts[0];
         String accessSecret  = secretParts[1];
 
-        AppKeyPair appKeys = new AppKeyPair(Keys.APP_KEY, Keys.APP_SECRET);
+        AppKeyPair appKeys = new AppKeyPair(Constants.APP_KEY, Constants.APP_SECRET);
         AccessTokenPair tokenPair = new AccessTokenPair(accessKey, accessSecret);
-        WebAuthSession session = new WebAuthSession(appKeys, Keys.ACCESS_TYPE, tokenPair);
+        WebAuthSession session = new WebAuthSession(appKeys, Constants.ACCESS_TYPE, tokenPair);
 
         dropbox = new DropboxAPI<WebAuthSession>(session);
 

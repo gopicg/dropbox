@@ -22,7 +22,7 @@ public class DropboxFolder extends IFolder {
     public List<IFolder> getFolders() throws StorageException {
         List<IFolder> folders = new ArrayList<IFolder>();
         try {
-            DropboxAPI.Entry entry = dropbox.metadata(key.getNativePath(), 0, null, true, null);
+            DropboxAPI.Entry entry = dropbox.metadata(key.getPathKey().getPath(Constants.SEPARATOR), 0, null, true, null);
             for(DropboxAPI.Entry childEntry: entry.contents) {
                 String childFileName = childEntry.fileName();
                 if (childEntry.isDir)
@@ -40,7 +40,7 @@ public class DropboxFolder extends IFolder {
     public List<INode> getContents() throws StorageException {
         try {
             List<INode> nodes = new ArrayList<INode>();
-            DropboxAPI.Entry entry = dropbox.metadata(key.getNativePath(), 0, null, true, null);
+            DropboxAPI.Entry entry = dropbox.metadata(key.getPathKey().getPath(Constants.SEPARATOR), 0, null, true, null);
             for(DropboxAPI.Entry childEntry: entry.contents) {
                 String childFileName = childEntry.fileName();
                 if (childEntry.isDir)
@@ -60,7 +60,7 @@ public class DropboxFolder extends IFolder {
     public IFolder createFolder(String name) throws StorageException {
         try {
             NodeKey newKey = key.child(name);
-            DropboxAPI.Entry entry = dropbox.createFolder(newKey.getNativePath());
+            DropboxAPI.Entry entry = dropbox.createFolder(newKey.getPathKey().getPath(Constants.SEPARATOR));
             return new DropboxFolder(newKey, dropbox);
         } catch (DropboxException e) {
             String message = String.format(UNABLE_TO_ADD_FOLDER(name, getName()));
@@ -82,7 +82,7 @@ public class DropboxFolder extends IFolder {
 
     @Override
     public void delete() throws StorageException {
-        String path = key.getNativePath();
+        String path = key.getPathKey().getPath(Constants.SEPARATOR);
         try {
             dropbox.delete(path);
         } catch (DropboxException e) {
