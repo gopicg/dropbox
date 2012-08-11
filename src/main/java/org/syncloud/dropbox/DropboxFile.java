@@ -8,42 +8,52 @@ import syncloud.storage.InputStreamProvider;
 import syncloud.storage.NodeKey;
 import syncloud.storage.StorageException;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
 public class DropboxFile implements IFile {
     private NodeKey key;
+    private DropboxAPI.Entry entry;
     private DropboxAPI<?> dropbox;
+
     private static Logger logger = Logger.getLogger(DropboxFile.class);
 
-    public DropboxFile(NodeKey key, DropboxAPI<?> dropbox) {
+    public DropboxFile(NodeKey key, DropboxAPI.Entry entry, DropboxAPI<?> dropbox) {
         this.key = key;
+        this.entry = entry;
         this.dropbox = dropbox;
     }
 
     @Override
     public boolean exists() {
-        try {
-            DropboxAPI.Entry entry = dropbox.metadata(key.getPathKey().getPath(Constants.SEPARATOR), 0, null, false, null);
-            return (entry != null && !entry.isDeleted);
-        } catch (DropboxException e) {
-        }
-        return false;
+        return (entry != null && !entry.isDeleted);
     }
 
     @Override
     public String getVersion() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return entry.rev;
     }
 
     @Override
-    public void save(InputStreamProvider inputStreamProvider, long l) throws StorageException {
-        //To change body of implemented methods use File | Settings | File Templates.
+    public void save(InputStreamProvider inputStreamProvider, long length) throws StorageException {
+        String path = key.getPathKey().getPath(Constants.SEPARATOR);
+        InputStream inputStream = inputStreamProvider.getData();
+        try {
+            dropbox.putFileOverwrite(path, inputStream, length, null);
+        } catch (DropboxException e) {
+        } finally {
+            if (inputStream != null) {
+                try {
+                    inputStream.close();
+                } catch (IOException e) {}
+            }
+        }
     }
 
     @Override
     public long size() {
-        return 0;  //To change body of implemented methods use File | Settings | File Templates.
+        return Long.parseLong(entry.size);
     }
 
     @Override
@@ -54,7 +64,10 @@ public class DropboxFile implements IFile {
 
     @Override
     public void delete() throws StorageException {
-        //To change body of implemented methods use File | Settings | File Templates.
+        try {
+            dropbox.delete(key.getPathKey().getPath(Constants.SEPARATOR));
+        } catch (DropboxException e) {
+        }
     }
 
     @Override
@@ -64,6 +77,10 @@ public class DropboxFile implements IFile {
 
     @Override
     public InputStream getData() throws StorageException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        try {
+            return dropbox.getFileStream(key.getPathKey().getPath(Constants.SEPARATOR), entry.rev);
+        } catch (DropboxException e) {
+            throw new StorageException(e.getMessage());
+        }
     }
 }

@@ -50,7 +50,7 @@ public class DropboxFolder extends IFolder {
                 if (childEntry.isDir)
                     nodes.add(new DropboxFolder(key.child(childFileName), dropbox));
                 else
-                    nodes.add(new DropboxFile(key.child(childFileName), dropbox));
+                    nodes.add(new DropboxFile(key.child(childFileName), childEntry, dropbox));
             }
             return nodes;
         } catch (DropboxException e) {
@@ -79,7 +79,7 @@ public class DropboxFolder extends IFolder {
         try {
             NodeKey newKey = key.child(name);
             DropboxAPI.Entry newEntry = dropbox.putFile(newKey.getPathKey().getPath(Constants.SEPARATOR), inputStream, length, null, null);
-            return new DropboxFile(newKey, dropbox);
+            return new DropboxFile(newKey, newEntry, dropbox);
         } catch (DropboxUnlinkedException e) {
             // User has unlinked, ask them to link again here.
         } catch (DropboxException e) {
