@@ -1,6 +1,7 @@
 package org.syncloud.dropbox;
 
 import com.dropbox.client2.DropboxAPI;
+import com.dropbox.client2.exception.DropboxException;
 import syncloud.core.log.Logger;
 import syncloud.storage.IFile;
 import syncloud.storage.InputStreamProvider;
@@ -22,7 +23,12 @@ public class DropboxFile implements IFile {
 
     @Override
     public boolean exists() {
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
+        try {
+            DropboxAPI.Entry entry = dropbox.metadata(key.getPathKey().getPath(Constants.SEPARATOR), 0, null, false, null);
+            return (entry != null && !entry.isDeleted);
+        } catch (DropboxException e) {
+        }
+        return false;
     }
 
     @Override

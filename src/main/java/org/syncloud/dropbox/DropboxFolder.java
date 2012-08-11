@@ -2,9 +2,13 @@ package org.syncloud.dropbox;
 
 import com.dropbox.client2.DropboxAPI;
 import com.dropbox.client2.exception.DropboxException;
+import com.dropbox.client2.exception.DropboxUnlinkedException;
 import syncloud.core.log.Logger;
 import syncloud.storage.*;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -70,8 +74,24 @@ public class DropboxFolder extends IFolder {
     }
 
     @Override
-    public IFile createFile(String s, InputStreamProvider inputStreamProvider, long l) throws StorageException {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    public IFile createFile(String name, InputStreamProvider inputStreamProvider, long length) throws StorageException {
+        InputStream inputStream = inputStreamProvider.getData();
+        try {
+            NodeKey newKey = key.child(name);
+            DropboxAPI.Entry newEntry = dropbox.putFile(newKey.getPathKey().getPath(Constants.SEPARATOR), inputStream, length, null, null);
+            return new DropboxFile(newKey, dropbox);
+        } catch (DropboxUnlinkedException e) {
+            // User has unlinked, ask them to link again here.
+        } catch (DropboxException e) {
+//            Log.e("DbExampleLog", "Something went wrong while uploading.");
+        } finally {
+            if (inputStream != null) {
+                try {
+                    inputStream.close();
+                } catch (IOException e) {}
+            }
+        }
+        return null;
     }
 
     @Override
