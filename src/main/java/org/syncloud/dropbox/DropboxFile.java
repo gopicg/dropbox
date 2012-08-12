@@ -17,6 +17,8 @@ public class DropboxFile implements IFile {
     private DropboxAPI.Entry entry;
     private DropboxAPI<?> dropbox;
 
+    private boolean deleted;
+
     private static Logger logger = Logger.getLogger(DropboxFile.class);
 
     public DropboxFile(NodeKey key, DropboxAPI.Entry entry, DropboxAPI<?> dropbox) {
@@ -27,11 +29,12 @@ public class DropboxFile implements IFile {
 
     @Override
     public boolean exists() {
-        return (entry != null && !entry.isDeleted);
+        return (!deleted && entry != null && !entry.isDeleted);
     }
 
     @Override
     public String getVersion() {
+        if (deleted || entry == null || entry.isDeleted) return null;
         return entry.rev;
     }
 
@@ -40,7 +43,8 @@ public class DropboxFile implements IFile {
         String path = key.getPathKey().getPath(Constants.SEPARATOR);
         InputStream inputStream = inputStreamProvider.getData();
         try {
-            dropbox.putFileOverwrite(path, inputStream, length, null);
+            DropboxAPI.Entry newEntry = dropbox.putFileOverwrite(path, inputStream, length, null);
+            entry = newEntry;
         } catch (DropboxException e) {
         } finally {
             if (inputStream != null) {
@@ -66,7 +70,11 @@ public class DropboxFile implements IFile {
     public void delete() throws StorageException {
         try {
             dropbox.delete(key.getPathKey().getPath(Constants.SEPARATOR));
+            deleted = true;
         } catch (DropboxException e) {
+            String message = String.format(UNABLE_TO_DELETE_FILE, key.getPathKey().getPath(Constants.SEPARATOR));
+            logger.error(message, e);
+            throw new StorageException(message, e);
         }
     }
 
