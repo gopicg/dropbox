@@ -9,43 +9,29 @@ import syncloud.storage.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DropboxStorage implements IStorage, ISecured {
-
-    private StorageKey key;
-    private DropboxAPI<?> dropbox;
+public class DropboxStorage implements IStorage {
 
     public final static String ROOT = "/";
     private final NodeKey rootNodeKey;
 
+    private StorageKey key;
+    private DropboxAuthorization authorization;
+
     public DropboxStorage(StorageKey key) {
         this.key = key;
         rootNodeKey = NodeKey.create(key, ROOT);
+        authorization = new DropboxAuthorization();
     }
 
     @Override
-    public boolean authenticate(String secret) {
-        String[] secretParts = secret.split(":");
-        String accessKey = secretParts[0];
-        String accessSecret  = secretParts[1];
-
-        AppKeyPair appKeys = new AppKeyPair(Constants.APP_KEY, Constants.APP_SECRET);
-        AccessTokenPair tokenPair = new AccessTokenPair(accessKey, accessSecret);
-        WebAuthSession session = new WebAuthSession(appKeys, Constants.ACCESS_TYPE, tokenPair);
-
-        dropbox = new DropboxAPI<WebAuthSession>(session);
-
-        return true;
-    }
-
-    @Override
-    public boolean authenticated() {
-        return dropbox != null;
+    public IAuthorization getAuthorization() {
+        return authorization;
     }
 
     @Override
     public List<IFolder> getRoots() throws StorageException {
         List<IFolder> roots = new ArrayList<IFolder>();
-        DropboxFolder root = new DropboxFolder(rootNodeKey, dropbox);
+        DropboxFolder root = new DropboxFolder(rootNodeKey, authorization.dropbox);
         roots.add(root);
         return roots;
     }
