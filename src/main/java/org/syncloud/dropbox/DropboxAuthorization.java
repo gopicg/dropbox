@@ -10,16 +10,34 @@ import syncloud.storage.OAuthAccess;
 
 public class DropboxAuthorization implements IOAuthAuthorization {
 
+    public WebAuthSession session;
+    public WebAuthSession.WebAuthInfo authInfo;
+
     public DropboxAPI<?> dropbox;
 
     @Override
     public String startAuthentication() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        AppKeyPair appKeys = new AppKeyPair(Constants.APP_KEY, Constants.APP_SECRET);
+        session = new WebAuthSession(appKeys, Constants.ACCESS_TYPE);
+
+        try {
+            authInfo = session.getAuthInfo();
+            return authInfo.url;
+        } catch (DropboxException e) {
+            return null;
+        }
     }
 
     @Override
     public OAuthAccess finishAuthentication() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        String uid = null;
+        try {
+            uid = session.retrieveWebAccessToken(authInfo.requestTokenPair);
+            AccessTokenPair accessTokenPair = session.getAccessTokenPair();
+            return new OAuthAccess(uid, accessTokenPair.key, accessTokenPair.secret);
+        } catch (DropboxException e) {
+            return null;
+        }
     }
 
     @Override
