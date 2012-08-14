@@ -16,12 +16,16 @@ public class DropboxAuthorization implements IOAuthAuthorization {
     public DropboxAPI<?> dropbox;
 
     @Override
-    public String startAuthentication() {
+    public String startAuthentication(String callbackUrl) {
         AppKeyPair appKeys = new AppKeyPair(Constants.APP_KEY, Constants.APP_SECRET);
         session = new WebAuthSession(appKeys, Constants.ACCESS_TYPE);
 
         try {
-            authInfo = session.getAuthInfo();
+            WebAuthSession.WebAuthInfo authInfo = null;
+            if (callbackUrl != null)
+                authInfo = session.getAuthInfo(callbackUrl);
+            else
+                authInfo = session.getAuthInfo();
             return authInfo.url;
         } catch (DropboxException e) {
             return null;
