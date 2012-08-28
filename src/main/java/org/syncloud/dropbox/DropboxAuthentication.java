@@ -5,10 +5,10 @@ import com.dropbox.client2.exception.DropboxException;
 import com.dropbox.client2.session.AccessTokenPair;
 import com.dropbox.client2.session.AppKeyPair;
 import com.dropbox.client2.session.WebAuthSession;
-import syncloud.storage.IOAuthAuthorization;
+import syncloud.storage.IOAuthAuthentication;
 import syncloud.storage.OAuthAccess;
 
-public class DropboxAuthorization implements IOAuthAuthorization {
+public class DropboxAuthentication implements IOAuthAuthentication {
 
     public WebAuthSession session;
     public WebAuthSession.WebAuthInfo authInfo;
