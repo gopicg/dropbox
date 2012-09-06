@@ -10,7 +10,7 @@ public class DropboxStorageHelper {
     public static final String TEST_FOLDER = ".syncloud.test";
 
     public static DropboxStorage createStorage() {
-        DropboxStorage storage = new DropboxStorage(new StorageKey("Dropbox", new User(Credentials.LOGIN)));
+        DropboxStorage storage = new DropboxStorage(new StorageKey("Dropbox", Credentials.LOGIN));
         try {
             IOAuthAuthentication auth = (IOAuthAuthentication)storage.getAuthentication(AuthenticationType.OAuth);
             auth.authenticate(Credentials.ACCESS_KEY, Credentials.ACCESS_SECRET);
