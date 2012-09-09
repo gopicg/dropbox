@@ -26,7 +26,7 @@ public class DropboxFolder extends IFolder {
     public List<IFolder> getFolders() throws StorageException {
         List<IFolder> folders = new ArrayList<IFolder>();
         try {
-            DropboxAPI.Entry entry = dropbox.metadata(key.getPathKey().getPath(Constants.SEPARATOR), 0, null, true, null);
+            DropboxAPI.Entry entry = dropbox.metadata(key.getPath().getPath(Constants.SEPARATOR), 0, null, true, null);
             for(DropboxAPI.Entry childEntry: entry.contents) {
                 String childFileName = childEntry.fileName();
                 if (childEntry.isDir)
@@ -44,7 +44,7 @@ public class DropboxFolder extends IFolder {
     public List<INode> getContents() throws StorageException {
         try {
             List<INode> nodes = new ArrayList<INode>();
-            DropboxAPI.Entry entry = dropbox.metadata(key.getPathKey().getPath(Constants.SEPARATOR), 0, null, true, null);
+            DropboxAPI.Entry entry = dropbox.metadata(key.getPath().getPath(Constants.SEPARATOR), 0, null, true, null);
             for(DropboxAPI.Entry childEntry: entry.contents) {
                 String childFileName = childEntry.fileName();
                 if (childEntry.isDir)
@@ -64,7 +64,7 @@ public class DropboxFolder extends IFolder {
     public IFolder createFolder(String name) throws StorageException {
         try {
             NodeKey newKey = key.child(name);
-            DropboxAPI.Entry entry = dropbox.createFolder(newKey.getPathKey().getPath(Constants.SEPARATOR));
+            DropboxAPI.Entry entry = dropbox.createFolder(newKey.getPath().getPath(Constants.SEPARATOR));
             return new DropboxFolder(newKey, dropbox);
         } catch (DropboxException e) {
             String message = String.format(UNABLE_TO_ADD_FOLDER(name, getName()));
@@ -78,7 +78,7 @@ public class DropboxFolder extends IFolder {
         InputStream inputStream = inputStreamProvider.getData();
         try {
             NodeKey newKey = key.child(name);
-            DropboxAPI.Entry newEntry = dropbox.putFile(newKey.getPathKey().getPath(Constants.SEPARATOR), inputStream, length, null, null);
+            DropboxAPI.Entry newEntry = dropbox.putFile(newKey.getPath().getPath(Constants.SEPARATOR), inputStream, length, null, null);
             return new DropboxFile(newKey, newEntry, dropbox);
         } catch (DropboxUnlinkedException e) {
             // User has unlinked, ask them to link again here.
@@ -96,13 +96,13 @@ public class DropboxFolder extends IFolder {
 
     @Override
     public String getName() {
-        List<String> components = key.getPathKey().getPathComponents();
+        List<String> components = key.getPath().getPathComponents();
         return components.get(components.size() - 1);
     }
 
     @Override
     public void delete() throws StorageException {
-        String path = key.getPathKey().getPath(Constants.SEPARATOR);
+        String path = key.getPath().getPath(Constants.SEPARATOR);
         try {
             dropbox.delete(path);
         } catch (DropboxException e) {

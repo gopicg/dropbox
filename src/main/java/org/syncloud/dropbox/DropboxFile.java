@@ -40,7 +40,7 @@ public class DropboxFile implements IFile {
 
     @Override
     public void save(InputStreamProvider inputStreamProvider, long length) throws StorageException {
-        String path = key.getPathKey().getPath(Constants.SEPARATOR);
+        String path = key.getPath().getPath(Constants.SEPARATOR);
         InputStream inputStream = inputStreamProvider.getData();
         try {
             DropboxAPI.Entry newEntry = dropbox.putFileOverwrite(path, inputStream, length, null);
@@ -62,17 +62,17 @@ public class DropboxFile implements IFile {
 
     @Override
     public String getName() {
-        List<String> components = key.getPathKey().getPathComponents();
+        List<String> components = key.getPath().getPathComponents();
         return components.get(components.size() - 1);
     }
 
     @Override
     public void delete() throws StorageException {
         try {
-            dropbox.delete(key.getPathKey().getPath(Constants.SEPARATOR));
+            dropbox.delete(key.getPath().getPath(Constants.SEPARATOR));
             deleted = true;
         } catch (DropboxException e) {
-            String message = String.format(UNABLE_TO_DELETE_FILE, key.getPathKey().getPath(Constants.SEPARATOR));
+            String message = String.format(UNABLE_TO_DELETE_FILE, key.getPath().getPath(Constants.SEPARATOR));
             logger.error(message, e);
             throw new StorageException(message, e);
         }
@@ -86,7 +86,7 @@ public class DropboxFile implements IFile {
     @Override
     public InputStream getData() throws StorageException {
         try {
-            return dropbox.getFileStream(key.getPathKey().getPath(Constants.SEPARATOR), entry.rev);
+            return dropbox.getFileStream(key.getPath().getPath(Constants.SEPARATOR), entry.rev);
         } catch (DropboxException e) {
             throw new StorageException(e.getMessage());
         }
