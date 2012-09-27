@@ -21,7 +21,7 @@ public class DropboxAuthentication implements IOAuthAuthentication {
         session = new WebAuthSession(appKeys, Constants.ACCESS_TYPE);
 
         try {
-            WebAuthSession.WebAuthInfo authInfo = null;
+            authInfo = null;
             if (callbackUrl != null)
                 authInfo = session.getAuthInfo(callbackUrl);
             else
@@ -38,6 +38,7 @@ public class DropboxAuthentication implements IOAuthAuthentication {
         try {
             uid = session.retrieveWebAccessToken(authInfo.requestTokenPair);
             AccessTokenPair accessTokenPair = session.getAccessTokenPair();
+            if (accessTokenPair == null) return null;
             return new OAuthAccess(uid, accessTokenPair.key, accessTokenPair.secret);
         } catch (DropboxException e) {
             return null;
