@@ -39,7 +39,9 @@ public class DropboxAuthentication implements IOAuthAuthentication {
             uid = session.retrieveWebAccessToken(authInfo.requestTokenPair);
             AccessTokenPair accessTokenPair = session.getAccessTokenPair();
             if (accessTokenPair == null) return null;
-            return new OAuthAccess(uid, accessTokenPair.key, accessTokenPair.secret);
+            DropboxAPI<?> dropbox = CreateDropboxApi(accessTokenPair.key, accessTokenPair.secret);
+            DropboxAPI.Account account = dropbox.accountInfo();
+            return new OAuthAccess(account.displayName, accessTokenPair.key, accessTokenPair.secret);
         } catch (DropboxException e) {
             return null;
         }
@@ -47,10 +49,7 @@ public class DropboxAuthentication implements IOAuthAuthentication {
 
     @Override
     public boolean authenticate(String accessKey, String accessSecret) {
-        AppKeyPair appKeys = new AppKeyPair(Constants.APP_KEY, Constants.APP_SECRET);
-        AccessTokenPair tokenPair = new AccessTokenPair(accessKey, accessSecret);
-        WebAuthSession session = new WebAuthSession(appKeys, Constants.ACCESS_TYPE, tokenPair);
-        dropbox = new DropboxAPI<WebAuthSession>(session);
+        dropbox = CreateDropboxApi(accessKey, accessSecret);
         try {
             DropboxAPI.Account account = dropbox.accountInfo();
             return account != null;
@@ -58,6 +57,14 @@ public class DropboxAuthentication implements IOAuthAuthentication {
             return false;
         }
     }
+
+    private static DropboxAPI<?> CreateDropboxApi(String accessKey, String accessSecret) {
+        AppKeyPair appKeys = new AppKeyPair(Constants.APP_KEY, Constants.APP_SECRET);
+        AccessTokenPair tokenPair = new AccessTokenPair(accessKey, accessSecret);
+        WebAuthSession session = new WebAuthSession(appKeys, Constants.ACCESS_TYPE, tokenPair);
+        return new DropboxAPI<WebAuthSession>(session);
+    }
+
 
     @Override
     public boolean authenticated() {
