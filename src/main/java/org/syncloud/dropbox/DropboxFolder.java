@@ -5,8 +5,8 @@ import com.dropbox.client2.exception.DropboxException;
 import com.dropbox.client2.exception.DropboxUnlinkedException;
 import syncloud.core.log.Logger;
 import syncloud.storage.*;
+import syncloud.storage.auth.ErrorCode;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;

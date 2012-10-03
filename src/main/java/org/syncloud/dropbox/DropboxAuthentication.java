@@ -5,15 +5,21 @@ import com.dropbox.client2.exception.DropboxException;
 import com.dropbox.client2.session.AccessTokenPair;
 import com.dropbox.client2.session.AppKeyPair;
 import com.dropbox.client2.session.WebAuthSession;
-import syncloud.storage.IOAuthAuthentication;
+import syncloud.storage.StorageKey;
+import syncloud.storage.auth.IOAuthAuthentication;
 import syncloud.storage.OAuthAccess;
 
 public class DropboxAuthentication implements IOAuthAuthentication {
 
     public WebAuthSession session;
     public WebAuthSession.WebAuthInfo authInfo;
+    private StorageKey storageKey;
 
     public DropboxAPI<?> dropbox;
+
+    public DropboxAuthentication(StorageKey storageKey) {
+        this.storageKey = storageKey;
+    }
 
     @Override
     public String startAuthentication(String callbackUrl) {
@@ -69,5 +75,10 @@ public class DropboxAuthentication implements IOAuthAuthentication {
     @Override
     public boolean authenticated() {
         return dropbox != null;
+    }
+
+    @Override
+    public StorageKey getStorageKey() {
+        return storageKey;
     }
 }
