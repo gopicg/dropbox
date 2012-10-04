@@ -16,9 +16,8 @@ public class DropboxStorageHelper {
 
     public static DropboxStorage createStorage() {
         try {
-            StorageKey dropbox = new StorageKey("Dropbox", Credentials.LOGIN);
-            DropboxAuthentication auth = (DropboxAuthentication)new DropboxStorageMetadata().getAuthentication(dropbox, AuthenticationType.OAuth);
-            auth.authenticate(Credentials.ACCESS_KEY, Credentials.ACCESS_SECRET);
+            DropboxAuthentication auth = (DropboxAuthentication)new DropboxStorageMetadata().getAuthentication(AuthenticationType.OAuth);
+            auth.authenticate(Credentials.LOGIN, Credentials.ACCESS_KEY, Credentials.ACCESS_SECRET);
             return new DropboxStorage(auth);
         } catch (Exception e) {
             fail("Authentication failed");

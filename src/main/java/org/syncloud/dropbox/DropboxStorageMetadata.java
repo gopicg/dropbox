@@ -7,9 +7,11 @@ import syncloud.storage.auth.IAuthentication;
 import java.util.EnumSet;
 
 public class DropboxStorageMetadata extends IStorageMetadata {
+    public static String NAME = "Dropbox";
+
     @Override
     public String getName() {
-        return "Dropbox";
+        return NAME;
     }
 
     @Override
@@ -23,11 +25,11 @@ public class DropboxStorageMetadata extends IStorageMetadata {
     }
 
     @Override
-    public IAuthentication getAuthentication(StorageKey storageKey, AuthenticationType type) throws StorageException {
-        if (type == AuthenticationType.OAuth)
-            return new DropboxAuthentication(storageKey);
+    public IAuthentication getAuthentication(AuthenticationType authenticationType) throws StorageException {
+        if (authenticationType == AuthenticationType.OAuth)
+            return new DropboxAuthentication();
         else {
-            String message = IStorageMetadata.MessageUnsupportedAuthenticationType(type);
+            String message = IStorageMetadata.MessageUnsupportedAuthenticationType(authenticationType);
             throw new StorageException(message);
         }
     }

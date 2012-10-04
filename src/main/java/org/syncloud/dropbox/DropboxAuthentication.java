@@ -7,18 +7,17 @@ import com.dropbox.client2.session.AppKeyPair;
 import com.dropbox.client2.session.WebAuthSession;
 import syncloud.storage.StorageKey;
 import syncloud.storage.auth.IOAuthAuthentication;
-import syncloud.storage.OAuthAccess;
+import syncloud.storage.auth.OAuthAccess;
 
 public class DropboxAuthentication implements IOAuthAuthentication {
 
     public WebAuthSession session;
     public WebAuthSession.WebAuthInfo authInfo;
-    private StorageKey storageKey;
 
+    public String user;
     public DropboxAPI<?> dropbox;
 
-    public DropboxAuthentication(StorageKey storageKey) {
-        this.storageKey = storageKey;
+    public DropboxAuthentication() {
     }
 
     @Override
@@ -54,11 +53,13 @@ public class DropboxAuthentication implements IOAuthAuthentication {
     }
 
     @Override
-    public boolean authenticate(String accessKey, String accessSecret) {
+    public boolean authenticate(String user, String accessKey, String accessSecret) {
         dropbox = CreateDropboxApi(accessKey, accessSecret);
         try {
             DropboxAPI.Account account = dropbox.accountInfo();
-            return account != null;
+            boolean authenticated = account != null;
+            if (authenticated) this.user = user;
+            return authenticated;
         } catch (DropboxException e) {
             return false;
         }
@@ -71,7 +72,6 @@ public class DropboxAuthentication implements IOAuthAuthentication {
         return new DropboxAPI<WebAuthSession>(session);
     }
 
-
     @Override
     public boolean authenticated() {
         return dropbox != null;
@@ -79,6 +79,6 @@ public class DropboxAuthentication implements IOAuthAuthentication {
 
     @Override
     public StorageKey getStorageKey() {
-        return storageKey;
+        return new StorageKey(DropboxStorageMetadata.NAME, user);
     }
 }
