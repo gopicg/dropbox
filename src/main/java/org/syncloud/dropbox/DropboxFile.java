@@ -57,7 +57,7 @@ public class DropboxFile implements IFile {
 
     @Override
     public long size() {
-        return Long.parseLong(entry.size);
+        return entry.bytes;
     }
 
     @Override
