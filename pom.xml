@@ -8,7 +8,7 @@
     <name>syncloud-dropbox</name>
     <description>Dropbox Syncloud Adapter</description>
     <url>https://github.com/syncloud/dropbox</url>
-    
+
     <prerequisites>
         <maven>2.0.9</maven>
     </prerequisites>
@@ -18,7 +18,44 @@
         <artifactId>oss-parent</artifactId>
         <version>7</version>
     </parent>
-	
+
+    <scm>
+        <connection>scm:git:git://github.com/syncloud/dropbox.git</connection>
+        <url>scm:git:git@github.com:syncloud/dropbox.git</url>
+        <developerConnection>scm:git:git@github.com:syncloud/dropbox.git</developerConnection>
+    </scm>
+
+    <licenses>
+        <license>
+            <name>GNU GENERAL PUBLIC LICENSE v3</name>
+            <url>http://www.gnu.org/licenses/gpl.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <id>vsapronov</id>
+            <name>Vladimir Sapronov</name>
+            <email>vladimir.sapronov@gmail.com</email>
+        </developer>
+        <developer>
+            <id>cyberbob</id>
+            <name>Boris Rybalkin</name>
+            <email>ribalkin@gmail.com</email>
+        </developer>
+    </developers>
+
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.8.1</version>
+            </plugin>
+        </plugins>
+    </reporting>
+
     <build>
         <testResources>
             <testResource>
@@ -26,14 +63,14 @@
             </testResource>
         </testResources>
         <plugins>
-	    <plugin>
+            <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
                     <source>1.6</source>
                     <target>1.6</target>
                 </configuration>
             </plugin>
-	    <plugin>
+            <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>versions-maven-plugin</artifactId>
                 <version>1.2</version>
@@ -52,7 +89,7 @@
                 <artifactId>maven-dependency-plugin</artifactId>
                 <version>2.4</version>
             </plugin>
-	    <plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
                 <version>2.1.2</version>
@@ -64,7 +101,7 @@
                     </execution>
                 </executions>
             </plugin>
-	    <plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>2.3.1</version>
@@ -112,7 +149,7 @@
         <dependency>
             <groupId>org.syncloud</groupId>
             <artifactId>dropbox.java.api</artifactId>
-            <version>1.3.1-SNAPSHOT</version>
+            <version>1.3.1.1</version>
         </dependency>
         <dependency>
             <groupId>org.syncloud</groupId>
