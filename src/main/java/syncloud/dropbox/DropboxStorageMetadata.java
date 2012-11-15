@@ -1,4 +1,4 @@
-package org.syncloud.dropbox;
+package syncloud.dropbox;
 
 import syncloud.storage.*;
 import syncloud.storage.auth.AuthenticationType;

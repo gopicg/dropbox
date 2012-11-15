@@ -1,4 +1,4 @@
-package org.syncloud.dropbox;
+package syncloud.dropbox;
 
 public class Credentials {
     public static final String[] ACCOUNT = System.getProperty("dropbox.test.account").split(":");

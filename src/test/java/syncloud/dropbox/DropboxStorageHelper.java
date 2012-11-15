@@ -1,8 +1,7 @@
-package org.syncloud.dropbox;
+package syncloud.dropbox;
 
 import syncloud.storage.IFolder;
 import syncloud.storage.IStorage;
-import syncloud.storage.StorageKey;
 import syncloud.storage.auth.AuthenticationType;
 import syncloud.storage.util.FolderUtils;
 

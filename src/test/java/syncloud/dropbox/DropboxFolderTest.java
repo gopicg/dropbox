@@ -1,4 +1,4 @@
-package org.syncloud.dropbox;
+package syncloud.dropbox;
 
 import syncloud.storage.FolderTest;
 import syncloud.storage.IFolder;
