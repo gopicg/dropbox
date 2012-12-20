@@ -12,7 +12,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DropboxFolder extends IFolder {
+public class DropboxFolder implements IFolder {
     private NodeKey key;
     private DropboxAPI<?> dropbox;
     private static Logger logger = Logger.getLogger(DropboxFolder.class);
@@ -33,7 +33,7 @@ public class DropboxFolder extends IFolder {
                     folders.add(new DropboxFolder(key.child(childFileName), dropbox));
             }
         } catch (DropboxException e) {
-            String message = String.format(IFolder.UNABLE_TO_GET_CONTENTS, getName());
+            String message = Messages.UNABLE_TO_GET_SUBFOLDERS(key.getPath().getNativePath());
             logger.error(message);
             throw new StorageException(ErrorCode.Unknown, message);
         }
@@ -54,7 +54,7 @@ public class DropboxFolder extends IFolder {
             }
             return nodes;
         } catch (DropboxException e) {
-            String message = String.format(IFolder.UNABLE_TO_GET_CONTENTS, getName());
+            String message = Messages.UNABLE_TO_GET_CONTENTS(key.getPath().getNativePath());
             logger.error(message);
             throw new StorageException(ErrorCode.Unknown, message);
         }
@@ -67,7 +67,7 @@ public class DropboxFolder extends IFolder {
             DropboxAPI.Entry entry = dropbox.createFolder(newKey.getPath().getPath(Constants.SEPARATOR));
             return new DropboxFolder(newKey, dropbox);
         } catch (DropboxException e) {
-            String message = String.format(UNABLE_TO_ADD_FOLDER(name, getName()));
+            String message = Messages.UNABLE_TO_ADD_FOLDER(name, key.getPath().getNativePath());
             logger.error(message, e);
             throw new StorageException(message, e);
         }
@@ -106,7 +106,7 @@ public class DropboxFolder extends IFolder {
         try {
             dropbox.delete(path);
         } catch (DropboxException e) {
-            String message = String.format(UNABLE_TO_DELETE_FOLDER(path));
+            String message = Messages.UNABLE_TO_DELETE(key.getPath().getNativePath());
             logger.error(message, e);
             throw new StorageException(message);
         }

@@ -3,10 +3,7 @@ package syncloud.dropbox;
 import com.dropbox.client2.DropboxAPI;
 import com.dropbox.client2.exception.DropboxException;
 import syncloud.core.log.Logger;
-import syncloud.storage.IFile;
-import syncloud.storage.InputStreamProvider;
-import syncloud.storage.NodeKey;
-import syncloud.storage.StorageException;
+import syncloud.storage.*;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -72,7 +69,7 @@ public class DropboxFile implements IFile {
             dropbox.delete(key.getPath().getPath(Constants.SEPARATOR));
             deleted = true;
         } catch (DropboxException e) {
-            String message = String.format(UNABLE_TO_DELETE_FILE, key.getPath().getPath(Constants.SEPARATOR));
+            String message = Messages.UNABLE_TO_DELETE(key.getPath().getNativePath());
             logger.error(message, e);
             throw new StorageException(message, e);
         }
