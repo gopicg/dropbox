@@ -27,7 +27,7 @@ public class DropboxStorageMetadata extends IStorageMetadata {
     @Override
     public IAuthentication getAuthentication(AuthenticationType authenticationType) throws StorageException {
         if (authenticationType == AuthenticationType.OAuth)
-            return new DropboxAuthentication();
+            return new DropboxOAuthAuthentication();
         else {
             String message = IStorageMetadata.MessageUnsupportedAuthenticationType(authenticationType);
             throw new StorageException(message);

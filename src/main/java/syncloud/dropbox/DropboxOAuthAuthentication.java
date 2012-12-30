@@ -9,15 +9,20 @@ import syncloud.storage.StorageKey;
 import syncloud.storage.auth.IOAuthAuthentication;
 import syncloud.storage.auth.OAuthAccess;
 
-public class DropboxAuthentication implements IOAuthAuthentication {
+public class DropboxOAuthAuthentication implements DropboxAuthentication, IOAuthAuthentication {
 
     public WebAuthSession session;
     public WebAuthSession.WebAuthInfo authInfo;
 
     public String user;
-    public DropboxAPI<?> dropbox;
 
-    public DropboxAuthentication() {
+    public DropboxOAuthAuthentication() {
+    }
+
+    public DropboxAPI<?> dropbox;
+    @Override
+    public DropboxAPI<?> getDropbox() {
+        return dropbox;
     }
 
     @Override
