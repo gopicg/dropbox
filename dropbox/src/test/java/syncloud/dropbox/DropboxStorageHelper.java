@@ -1,5 +1,8 @@
 package syncloud.dropbox;
 
+import syncloud.dropbox.oauth.AccountUtil;
+import syncloud.dropbox.oauth.DropboxOAuthAuthentication;
+import syncloud.storage.Account;
 import syncloud.storage.IFolder;
 import syncloud.storage.IStorage;
 import syncloud.storage.auth.AuthenticationType;
@@ -16,7 +19,8 @@ public class DropboxStorageHelper {
     public static DropboxStorage createStorage() {
         try {
             DropboxOAuthAuthentication auth = (DropboxOAuthAuthentication)new DropboxStorageMetadata().getAuthentication(AuthenticationType.OAuth);
-            auth.authenticate(Credentials.LOGIN, Credentials.ACCESS_KEY, Credentials.ACCESS_SECRET);
+            Account account = AccountUtil.create(DropboxStorageMetadata.NAME, Credentials.LOGIN, Credentials.ACCESS_KEY, Credentials.ACCESS_SECRET);
+            auth.authenticate(account);
             return new DropboxStorage(auth);
         } catch (Exception e) {
             fail("Authentication failed");

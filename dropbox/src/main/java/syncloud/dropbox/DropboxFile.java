@@ -3,6 +3,7 @@ package syncloud.dropbox;
 import com.dropbox.client2.DropboxAPI;
 import com.dropbox.client2.exception.DropboxException;
 import syncloud.core.log.Logger;
+import syncloud.dropbox.oauth.Constants;
 import syncloud.storage.*;
 
 import java.io.IOException;

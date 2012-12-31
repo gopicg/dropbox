@@ -1,4 +1,4 @@
-package syncloud.dropbox;
+package syncloud.dropbox.oauth;
 
 import com.dropbox.client2.session.Session;
 

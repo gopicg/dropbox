@@ -1,5 +1,6 @@
 package syncloud.dropbox;
 
+import syncloud.dropbox.oauth.DropboxOAuthAuthentication;
 import syncloud.storage.*;
 import syncloud.storage.auth.AuthenticationType;
 import syncloud.storage.auth.IAuthentication;
