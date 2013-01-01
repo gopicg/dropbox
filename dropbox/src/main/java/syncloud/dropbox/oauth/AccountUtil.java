@@ -2,6 +2,7 @@ package syncloud.dropbox.oauth;
 
 import syncloud.storage.Account;
 import syncloud.storage.StorageKey;
+import syncloud.storage.auth.AuthenticationType;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -29,7 +30,7 @@ public class AccountUtil {
         credentials.put(CredentialKeys.ACCESS_KEY, accessKey);
         credentials.put(CredentialKeys.ACCESS_SECRET, accessSecret);
 
-        Account account = new Account(key, credentials);
+        Account account = new Account(AuthenticationType.OAuth, key, credentials);
         return account;
     }
 
